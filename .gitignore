@@ -1,0 +1,14 @@
+# Vim swap files.
+*.swp
+.*.swp
+
+# Skip data or temporary directories.
+logs
+tmp
+scraps
+var
+
+# Skip temporary backup files and directories.
+b.*
+*.b
+.backup
