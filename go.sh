@@ -415,7 +415,7 @@ fi;
 clear;
 echo "Connecting to $host ...";
 echo "$cmd":
-$cmd;
+eval $cmd;
 
 if [[ $? -gt 0 ]]; then
     quit;
