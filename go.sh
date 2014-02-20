@@ -4,7 +4,7 @@
 # License
 ###################################
 
-# Copyright (C) 2002-2013 F.S. Davis <consulting@fsdavis.com>. All rights
+# Copyright (C) 2002-2014 F.S. Davis <consulting@fsdavis.com>. All rights
 # reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -226,8 +226,8 @@ function menu_items()
 
 # Script information.
 SCRIPT=`basename $0`;
-DATE="2013-12-07";
-VERSION="2.0.0-d";
+DATE="2014-04-19";
+VERSION="2.0.1-d";
 
 # Dialog defaults.
 dialog_enabled='t';
@@ -423,7 +423,7 @@ fi;
 
 # Reload the menu.
 clear;
-$0;
+$0 $@;
 quit $EXIT_OTHER;
 
 ########## ORIGINAL STUFF HERE ##########
