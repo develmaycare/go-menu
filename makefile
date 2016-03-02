@@ -1,4 +1,4 @@
-PREFIX=/opt/bin
+PREFIX=/usr/local/bin
 
 install:
 	cp go.sh $(PREFIX)/go;

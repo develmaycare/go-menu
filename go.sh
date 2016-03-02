@@ -4,8 +4,7 @@
 # License
 ###################################
 
-# Copyright (C) 2002-2014 F.S. Davis <consulting@fsdavis.com>. All rights
-# reserved.
+# Copyright (C) F.S. Davis <shawn@ptltd.co>. All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,18 +25,45 @@
 # SOFTWARE.
 
 ###################################
-# Functions
+# Configuration
 ###################################
 
-# Determine if dialog command is available.
-function dialog_available()
-{
-    result=`which dialog`;
-    if [[ $? > 0 ]];
-        then echo "f"; return 1;
-        else echo "t"; return 0;
-    fi;
-} # dialog_available
+# Script information.
+SCRIPT=`basename $0`;
+DATE="2016-03-02";
+VERSION="2.1.0-d";
+
+# Make True and False more intuitive.
+TRUE=0;
+FALSE=1;
+
+# Dialog defaults.
+dialog_enabled=$TRUE;
+dialog_height=25;
+dialog_width=79;
+dialog_menu_height=20;
+
+# Exit codes.
+EXIT_NORMAL=0;
+EXIT_USAGE=1;
+EXIT_ENVIRONMENT=2;
+EXIT_OTHER=3;
+
+# Temporary files.
+CHOICE_FILE=~/.gomenu/choice.txt;
+DIALOG_SH=~/.gomenu/dialog.sh;
+TEMP_FILE=~/.gomenu/$SCRIPT.$$
+
+# Determine whether the dialog command is available.
+result=`which dialog`;
+if [[ $? -eq $TRUE ]];
+    then DIALOG_AVAILABLE=$TRUE;
+    else DIALOG_AVAILABLE=$FALSE;
+fi;
+
+###################################
+# Functions
+###################################
 
 # Find the user's choice and return the connection string.
 function find_choice()
@@ -117,10 +143,10 @@ function find_choice()
 # Close the menu.
 function footer()
 {
-    if [[ $dialog_enabled == "t" ]];
+    if [[ $dialog_enabled -eq $TRUE ]];
         then
-            echo "        QUIT \"Leave the Go Menu\"\\" >> $DIALOG_SH;
-            echo "    2> $CHOICE_FILE" >> $DIALOG_SH;
+            echo -n " QUIT \"Leave the Go Menu\"" >> $DIALOG_SH;
+            echo " 2> $CHOICE_FILE" >> $DIALOG_SH;
             chmod 755 $DIALOG_SH;
         else
             echo "" >> $TEMP_FILE;
@@ -133,11 +159,11 @@ function footer()
 function header()
 {
     local title=$1;
-    if [[ $dialog_enabled == "t" ]]; 
+    if [[ $dialog_enabled -eq $TRUE ]];
         then
-            echo 'dialog --backtitle "Go Menu" --title "Go Menu"\' > $DIALOG_SH;
-            echo "    --menu \"Select from the resources below:\" $dialog_height $dialog_width $dialog_menu_height\\" >> $DIALOG_SH;
-            echo "        FILTER\"Filter the menu.\"\\" >> $DIALOG_SH;
+            echo -n 'dialog --backtitle "Go Menu" --title "Go Menu"' > $DIALOG_SH;
+            echo -n " --menu \"Select from the resources below:\" $dialog_height $dialog_width $dialog_menu_height" >> $DIALOG_SH;
+#            echo "FILTER\ "Filter the menu.\"\\" >> $DIALOG_SH;
         else
             echo "------------------------------------------------------------------------------" >> $TEMP_FILE;
             echo "$title" >> $TEMP_FILE;
@@ -152,19 +178,19 @@ function init()
 {
     if [[ -d ~/.gomenu ]]; then return 0; fi;
 
-    dialog_enabled=`dialog_available`;
+    dialog_enabled=$DIALOG_AVAILABLE;
 
     mkdir ~/.gomenu;
     cat > ~/.gomenu/preferences.cfg << EOF
 # Indicates whether the dialog command should be used by default.
-dialog_enabled="$dialog_enabled";
+dialog_enabled=$dialog_enabled; # 0 = true, 1 = false
 
 # Control the dimensions of dialog menus.
 #dialog_height=25;
 #dialog_width=79;
 #dialog_menu_height=20;
 
-# Used to cause the Go Menu should first connect to another server.
+# Tell the Go Menu to first connect to another server.
 # use_proxy="ssh://user@example.com:22";
 EOF
 
@@ -209,46 +235,15 @@ function menu_items()
         comment=`echo "$line" | awk -F ',' '{print $3}'`;
         host='';
         host=`echo "$line" | awk -F ',' '{print $4}'`;
-        if [[ $dialog_enabled == "t" ]]; 
+        if [[ $dialog_enabled -eq $TRUE ]];
             then
-                echo "        $name \"($organization) $comment - $host\"\\" >> $DIALOG_SH;
+                echo -n " $name \"($organization) $comment - $host\"" >> $DIALOG_SH;
             else
                 echo "$line_number) $name ($organization): $comment - $host" >> $TEMP_FILE;
         fi;
         line_number=`expr $line_number + 1`;
     done
 } # menu_items
-
-
-###################################
-# Configuration
-###################################
-
-# Script information.
-SCRIPT=`basename $0`;
-DATE="2014-04-19";
-VERSION="2.0.1-d";
-
-# Dialog defaults.
-dialog_enabled='t';
-dialog_height=25;
-dialog_width=79;
-dialog_menu_height=20;
-
-# Make the user's go directory as needed.
-if [[ ! -d ~/.gomenu ]]; then init; fi;
-source ~/.gomenu/preferences.cfg;
-
-# Exit codes.
-EXIT_NORMAL=0;
-EXIT_USAGE=1;
-EXIT_ENVIRONMENT=2;
-EXIT_OTHER=3;
-
-# Temporary files.
-CHOICE_FILE=~/.gomenu/choice.txt;
-DIALOG_SH=~/.gomenu/dialog.sh;
-TEMP_FILE="$SCRIPT".$$
 
 ###################################
 # Help
@@ -313,6 +308,10 @@ be in the authorized_keys of the user account on the host machine.
 if [[ $1 = '--help' ]]; then echo "$HELP"; quit $EXIT_NORMAL; fi;
 if [[ $1 = '--version' ]]; then echo "$SCRIPT $VERSION ($DATE)"; quit $EXIT_NORMAL; fi;
 
+# Make the user's go directory as needed.
+if [[ ! -d ~/.gomenu ]]; then init; fi;
+#source ~/.gomenu/preferences.cfg;
+
 ###################################
 # Arguments
 ###################################
@@ -329,8 +328,8 @@ do
 done
 
 # Make sure dialog is installed.
-if [[ $dialog_enabled == "t" ]]; then
-    if [[ `dialog_available` == "f" ]]; then
+if [[ $dialog_enabled -eq $TRUE ]]; then
+    if [[ $DIALOG_AVAILABLE -eq FALSE ]]; then
         echo "The dialog command does not appear to be installed. Change your preferences to use a text-driven menu.";
         quit $EXIT_ENVIRONMENT;
     fi;
@@ -358,7 +357,7 @@ fi;
 # Check for the news file.
 news_file=~/.gomenu/news.txt;
 if [[ -f $news_file ]]; then 
-    if [[ $dialog_enabled == "t" ]]; 
+    if [[ $dialog_enabled -eq $TRUE ]];
         then
             echo -n 'dialog --backtitle "Go Menu" --title "Announcement"' > $DIALOG_SH;
             echo " --msgbox \"`cat $news_file`\" 20 30" >> $DIALOG_SH;
@@ -377,10 +376,10 @@ menu_items $resources_file;
 footer;
 
 # Display the menu and capture the choice.
-if [[ $dialog_enabled == "t" ]];
+if [[ $dialog_enabled -eq $TRUE ]];
     then 
         $DIALOG_SH;
-        if [[ $? = 1 ]]; 
+        if [[ $? -eq 1 ]];
             then choice='Q';
             else choice=`cat $CHOICE_FILE`; 
         fi;
@@ -396,7 +395,7 @@ case $choice in
         echo "TODO: Enable filtering.";
         quit $EXIT_OTHER;
     ;;
-    Q|q)
+    QUIT|Q|q)
         clear;
         echo "Goodbye, Mrs. Gloop! Adieu! Auvidersein! Gesundheit! Farewell!";
         quit $EXIT_NORMAL;
@@ -425,7 +424,3 @@ fi;
 clear;
 $0 $@;
 quit $EXIT_OTHER;
-
-########## ORIGINAL STUFF HERE ##########
-
-
