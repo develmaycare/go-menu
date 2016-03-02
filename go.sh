@@ -31,7 +31,7 @@
 # Script information.
 SCRIPT=`basename $0`;
 DATE="2016-03-02";
-VERSION="2.1.0-d";
+VERSION="2.2.0-d";
 
 # Make True and False more intuitive.
 TRUE=0;
@@ -182,10 +182,15 @@ function init()
 
     mkdir ~/.gomenu;
     cat > ~/.gomenu/preferences.cfg << EOF
+# By default, the Go Menu will look in a number of places for the resources.csv
+# file. You may override this here:
+#resources_file="/my/special/path/to/resources.csv";
+
 # Indicates whether the dialog command should be used by default.
 dialog_enabled=$dialog_enabled; # 0 = true, 1 = false
 
-# Control the dimensions of dialog menus.
+# Control the dimensions of dialog menus. The default usually works, but if you
+# have particularly large or small screen, you may wish to customize.
 #dialog_height=25;
 #dialog_width=79;
 #dialog_menu_height=20;
@@ -276,9 +281,9 @@ NOTES
 The go command reads resources from a text file located in one of the following
 locations:
 
-$HOME/.gomenu/resources.csv
-/etc/gomenu/resources.csv
-/opt/gomenu/resources.csv
+- $HOME/.gomenu/resources.csv
+- /etc/gomenu/resources.csv
+- /opt/gomenu/resources.csv
 
 These files are read in the order above. The valid columns are:
 
@@ -310,13 +315,11 @@ if [[ $1 = '--version' ]]; then echo "$SCRIPT $VERSION ($DATE)"; quit $EXIT_NORM
 
 # Make the user's go directory as needed.
 if [[ ! -d ~/.gomenu ]]; then init; fi;
-#source ~/.gomenu/preferences.cfg;
+source ~/.gomenu/preferences.cfg;
 
 ###################################
 # Arguments
 ###################################
-
-resources_file='';
 
 while getopts "f:hv" arg
 do

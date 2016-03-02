@@ -20,8 +20,8 @@ The Go Menu currently requires [Bash][bash] and [dialog][dialog].
 ## Installation
 
 Simply run `make install` from the gomenu directory. By default the `go`
-command is installed in `/opt/bin`. But you can change this by specify a prefix
-like so:
+command is installed in `/usr/local/bin`. But you can change this by specify a
+prefix like so:
 
     make install PREFIX=/path/to/my/preferred/bin
 
@@ -30,9 +30,9 @@ like so:
 The go command reads resources from a CSV file located in one of the following
 locations:
 
-$HOME/.gomenu/resources.csv
-/etc/gomenu/resources.csv
-/opt/gomenu/resources.csv
+- $HOME/.gomenu/resources.csv
+- /etc/gomenu/resources.csv
+- /opt/gomenu/resources.csv
 
 These files are read in the order above. The columns of the CSV are as follows:
 
