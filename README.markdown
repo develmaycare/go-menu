@@ -1,6 +1,6 @@
 # Go Menu
 
-The Go Menu is a command line utility providing a menu drive interface to
+The Go Menu is a command line utility providing a menu driven interface to
 connect to various servers. It uses a CSV file to create a [dialog][dialog] for
 selecting a given resource.
 
@@ -49,13 +49,14 @@ These files are read in the order above. The columns of the CSV are as follows:
 
 Here some examples:
 
-MsPiggy,ACME,Windows File Server,mspiggy.example.com
-RedHat6,ABC,Web Server,redhat6.example.com,4894
-Venus,ACME,Web Server,venus.example.com,4894,bob
+	Academic,University of Education,List Server,listserv.uof.edu
+	MsPiggy,ACME Inc.,Windows File Server,mspiggy.example.com
+	RedHat6,ABC Corp,Web Server,redhat6.example.com,4894
+	Venus,ACME Inc,Web Server,venus.example.com,4894,bob
 
 ## License
 
-The Go Menu is licensed under the [MIT License][mit]. See LICENSE.txt for more
+The Go Menu is licensed under the [BSD3 License][bsd3]. See LICENSE.txt for more
 info.
 
-[mit]: http://www.opensource.org/licenses/mit-license.html "MIT License"
+[bsd3]: https://opensource.org/licenses/BSD-3-Clause "BSD3 License"
