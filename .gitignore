@@ -4,7 +4,8 @@
 .backup
 .idea
 b.*
+_scraps
+docs/build
 logs
 tmp
-scraps
 var

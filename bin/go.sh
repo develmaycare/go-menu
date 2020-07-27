@@ -338,8 +338,7 @@ if [[ $dialog_enabled -eq $TRUE ]]; then
     fi;
 fi;
 
-# Attempt to automatically find a resources configuration file if one hasn't
-# been given.
+# Attempt to automatically find a resources configuration file if one hasn't been given.
 if [[ -z "$resources_file" ]]; then
     for f in ~/.gomenu/resources.csv /etc/gomenu/resources.csv /opt/gomenu/resources.csv
     do
@@ -367,7 +366,7 @@ if [[ -f $news_file ]]; then
             chmod 755 $DIALOG_SH;
             $DIALOG_SH;
         else
-            cat $new_file | more;
+            cat $news_file | more;
     fi;
 
     rm $news_file;

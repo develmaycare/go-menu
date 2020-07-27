@@ -1,0 +1,25 @@
+/* override table width restrictions */
+.wy-table-responsive table td, .wy-table-responsive table th {
+    white-space: normal;
+}
+
+.wy-table-responsive {
+    margin-bottom: 24px;
+    max-width: 100%;
+    overflow: visible;
+}
+
+/* forces the page to be full-width */
+.wy-nav-content {
+    max-width: 100% !important;
+}
+
+/* If you want to override the colors of the sidebar navigation.
+.wy-side-nav-search {
+    background: #506a8a !important;
+}
+
+.wy-side-scroll {
+    background: #6e90b5 !important;
+}
+*/
